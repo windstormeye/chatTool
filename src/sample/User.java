@@ -14,6 +14,11 @@ public class User {
         this.Upw = Upw;
     }
 
+    public User(String Uno, String Upw) {
+        this.Uno = Uno;
+        this.Upw = Upw;
+    }
+
     public String getUno() {
         return Uno;
     }
