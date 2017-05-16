@@ -11,14 +11,17 @@ import java.sql.SQLException;
  */
 
 public class DBManager {
+    // 连接mysql数据库
     public static Connection getConn() {
         String driver = "com.mysql.jdbc.Driver";
         String url = "jdbc:mysql://localhost:3306/chatDB?characterEncoding=utf8&useSSL=true";
+        // 改为相应的mysql用户名和密码
         String username = "root";
         String password = "woaiwoziji123";
         Connection conn = null;
         try {
-            Class.forName(driver); //classLoader,加载对应驱动
+            //classLoader,加载对应驱动
+            Class.forName(driver);
             conn = (Connection) DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -28,9 +31,11 @@ public class DBManager {
         return conn;
     }
 
+    // 插入
     public static int insert(User user) {
         Connection conn = getConn();
         int i = 0;
+        // 在此可更改sql语句
         String sql = "insert into User (Uno, Uname, Upw) values(?,?,?)";
         PreparedStatement pstmt;
         try {
@@ -48,8 +53,10 @@ public class DBManager {
         return i;
     }
 
+    // 查询某个用户是不是存在数据库中
     public static boolean search(User user) {
         Connection conn = getConn();
+        // 在此可更改sql语句
         String sql = "select * from User where Uno='" + user.getUno() + "'and Upw='" + user.getUpw() + "'";
         PreparedStatement pstmt;
         try {
@@ -65,15 +72,19 @@ public class DBManager {
                 }
                 return true;
             }
+            pstmt.close();
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return false;
     }
 
+    // 更新
     public static int update(User user) {
         Connection conn = getConn();
         int i = 0;
+        // 在此可更改sql语句
         String sql = "update User set Uname='" + user.getUname() + "' where Uno='" + user.getUno() + "'";
         PreparedStatement pstmt;
         try {
@@ -88,6 +99,7 @@ public class DBManager {
         return i;
     }
 
+    // 获得全部User表信息
     public static Integer getAll() {
         Connection conn = getConn();
         String sql = "select * from User";
@@ -96,7 +108,6 @@ public class DBManager {
             pstmt = (PreparedStatement)conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             int col = rs.getMetaData().getColumnCount();
-            System.out.println("============================");
             while (rs.next()) {
                 for (int i = 1; i <= col; i++) {
                     System.out.print(rs.getString(i) + "\t");
@@ -106,13 +117,15 @@ public class DBManager {
                 }
                 System.out.println("");
             }
-            System.out.println("============================");
+            pstmt.close();
+            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return null;
     }
 
+    // 删除
     public static int delete(String name) {
         Connection conn = getConn();
         int i = 0;

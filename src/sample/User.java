@@ -8,12 +8,15 @@ public class User {
     private String Uname;
     private String Upw;
 
+    // 一旦自己定义了构造方法,则java自带的构造方法失效
+    // 创建一个带全部参数的构造方法
     public User(String Uno, String Uname, String Upw) {
         this.Uno = Uno;
         this.Uname = Uname;
         this.Upw = Upw;
     }
 
+    // 创建一个只带学号、密码的构造方法
     public User(String Uno, String Upw) {
         this.Uno = Uno;
         this.Upw = Upw;
