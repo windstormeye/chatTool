@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -13,15 +14,21 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+import java.util.HashMap;
 
+public class Main extends Application {
+    Screen screen = Screen.getPrimary();
+    Rectangle2D bounds = screen.getVisualBounds();
     // 系统默认重载了开始窗体的方法
     @Override
     public void start(Stage primaryStage) throws Exception{
         // 设置主界面窗体标题
-        primaryStage.setTitle("在线聊天室");
+        primaryStage.setTitle("欢迎进入在线聊天室");
+        primaryStage.setX((Screen.getPrimary().getBounds().getWidth() - 300) / 2);
+        primaryStage.setY((Screen.getPrimary().getBounds().getHeight() - 275) / 2);
 
         // ======================================================
         // 登录页面
@@ -111,25 +118,51 @@ public class Main extends Application {
                 String Uname = trueNameT.getText();
                 String Upw = pwT.getText();
                 // 获取到数据库中受插入影响的列数
-                int row = DBManager.insert(new User(Uno, Uname, Upw));
-                // 如果受影响的列数不为0,则说明插入成功
-                if (row != 0) {
-                    Stage YESview  = new Stage();
-
+                if (Uno.isEmpty() || Uname.isEmpty() || Upw.isEmpty()) {
+                    Stage NOview  = new Stage();
+                    NOview.setX((Screen.getPrimary().getBounds().getWidth() - 100) / 2);
+                    NOview.setY((Screen.getPrimary().getBounds().getHeight() - 100) / 2);
                     // 垂直布局
                     VBox vbox = new VBox();
                     // 居中显示
                     vbox.setAlignment(Pos.CENTER);
-                    Label yesLabel = new Label("注册成功");
+                    Label yesLabel = new Label("信息填写错误");
                     Button yesBtn = new Button("确定");
                     yesBtn.setOnAction(event2 -> {
                         // 点击按钮后关闭名为YESview的窗体
-                        YESview.close();
+                        NOview.close();
                     });
                     vbox.getChildren().addAll(yesLabel, yesBtn);
 
-                    YESview.setScene(new Scene(vbox, 100, 100));
-                    YESview.show();
+                    NOview.setScene(new Scene(vbox, 100, 100));
+                    NOview.show();
+                } else {
+                    int row = DBManager.insert(new User(Uno, Uname, Upw));
+                    // 如果受影响的列数不为0,则说明插入成功
+                    if (row != 0) {
+                        Stage YESview = new Stage();
+                        YESview.setX((Screen.getPrimary().getBounds().getWidth() - 100) / 2);
+                        YESview.setY((Screen.getPrimary().getBounds().getHeight() - 100) / 2);
+                        // 垂直布局
+                        VBox vbox = new VBox();
+                        // 居中显示
+                        vbox.setAlignment(Pos.CENTER);
+                        Label yesLabel = new Label("注册成功");
+                        Button yesBtn = new Button("确定");
+                        yesBtn.setOnAction(event2 -> {
+                            HashMap<String , String> map = new HashMap<String , String>();
+                            map.put("Uname", Uname);
+                            map.put("Uno", Uno);
+                            SettingView settingView = new SettingView(map);
+                            YESview.close();
+                            primaryStage.close();
+                            settingView.show();
+                        });
+                        vbox.getChildren().addAll(yesLabel, yesBtn);
+
+                        YESview.setScene(new Scene(vbox, 100, 100));
+                        YESview.show();
+                    }
                 }
 
             });
@@ -142,24 +175,11 @@ public class Main extends Application {
         loginBtn.setOnAction(event -> {
             String Uno = nameTxt.getText();
             String Upw = pwTxt.getText();
-            boolean isLogin =  DBManager.search(new User(Uno, Upw));
-            if (isLogin) {
-                Stage YESview  = new Stage();
-
-                // 垂直布局
-                VBox vbox = new VBox();
-                // 居中显示
-                vbox.setAlignment(Pos.CENTER);
-                Label yesLabel = new Label("登录成功");
-                Button sureBtn = new Button("确定");
-                sureBtn.setOnAction(event1 -> {
-                    YESview.close();
-                });
-
-                vbox.getChildren().addAll(yesLabel, sureBtn);
-
-                YESview.setScene(new Scene(vbox, 100, 100));
-                YESview.show();
+            HashMap map =  DBManager.search(new User(Uno, Upw));
+            if (!map.isEmpty()) {
+                primaryStage.close();
+                SettingView setView = new SettingView(map);
+                setView.show();
             }
         });
 

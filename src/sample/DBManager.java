@@ -5,6 +5,7 @@ import com.mysql.jdbc.PreparedStatement;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 
 /**
  * Created by pjpjpj on 2017/5/15.
@@ -54,7 +55,7 @@ public class DBManager {
     }
 
     // 查询某个用户是不是存在数据库中
-    public static boolean search(User user) {
+    public static HashMap search(User user) {
         Connection conn = getConn();
         // 在此可更改sql语句
         String sql = "select * from User where Uno='" + user.getUno() + "'and Upw='" + user.getUpw() + "'";
@@ -63,21 +64,23 @@ public class DBManager {
             pstmt = (PreparedStatement) conn.prepareStatement(sql);
             ResultSet rs = pstmt.executeQuery();
             int col = rs.getMetaData().getColumnCount();
+            // 创建保存用户信息的字典
+            HashMap<String , String> map = new HashMap<String , String>();
             while (rs.next()) {
                 for (int i = 1; i <= col; i++) {
-                    System.out.print(rs.getString(i) + "\t");
-                    if ((i == 2) && (rs.getString(i).length() < 8)) {
-                        System.out.print("\t");
-                    }
+                    if (i == 1)
+                        map.put("Uno", rs.getString(i));
+                    if (i == 2)
+                        map.put("Uname", rs.getString(i));
                 }
-                return true;
+                return map;
             }
             pstmt.close();
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return false;
+        return null;
     }
 
     // 更新
