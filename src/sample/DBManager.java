@@ -21,7 +21,7 @@ public class DBManager {
         String password = "woaiwoziji123";
         Connection conn = null;
         try {
-            //classLoader,加载对应驱动
+            //classLoader,加载对应动
             Class.forName(driver);
             conn = (Connection) DriverManager.getConnection(url, username, password);
         } catch (ClassNotFoundException e) {
@@ -86,8 +86,8 @@ public class DBManager {
     // 更新
     public static int update(User user) {
         Connection conn = getConn();
-        int i = 0;
         // 在此可更改sql语句
+        int i = 0;
         String sql = "update User set Uname='" + user.getUname() + "' where Uno='" + user.getUno() + "'";
         PreparedStatement pstmt;
         try {
@@ -138,6 +138,28 @@ public class DBManager {
             pstmt = (PreparedStatement) conn.prepareStatement(sql);
             i = pstmt.executeUpdate();
             System.out.println("resutl: " + i);
+            pstmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+
+    public int insertToMessage(String Uname, String Mes, String timeID) {
+        Connection conn = getConn();
+        int i = 0;
+        // 在此可更改sql语句
+        String sql = "insert into Message (Uname, Mes, Mid) values(?,?,?)";
+        PreparedStatement pstmt;
+
+        try {
+            pstmt = (PreparedStatement) conn.prepareStatement(sql);
+            pstmt.setString(1, Uname);
+            pstmt.setString(2, Mes);
+            pstmt.setString(3, timeID);
+
+            i = pstmt.executeUpdate();
             pstmt.close();
             conn.close();
         } catch (SQLException e) {

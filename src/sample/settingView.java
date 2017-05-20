@@ -66,14 +66,14 @@ public class SettingView extends Stage {
             hbox.setSpacing(15);
             Button serverBtn = new Button("成为服务器");
             serverBtn.setOnAction(event1 -> {
-                ServerView serverView = new ServerView(hostStr, portStr);
+                ServerView serverView = new ServerView(hostStr, portStr, (String) map.get("Uname"));
                 choiceView.close();
                 serverView.show();
             });
 
             Button clientBtn = new Button("成为客户机");
             clientBtn.setOnAction(event2 -> {
-                ClientView clientView = new ClientView(hostStr, portStr);
+                ClientView clientView = new ClientView(hostStr, portStr, (String) map.get("Uname"));
                 choiceView.close();
                 clientView.show();
             });
@@ -81,7 +81,6 @@ public class SettingView extends Stage {
             choiceView.setScene(new Scene(hbox, 200, 200));
             choiceView.show();
         });
-
 
 
         this.setScene(new Scene(gridOfSetting));

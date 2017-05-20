@@ -1,11 +1,9 @@
 package sample;
 
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.Rectangle2D;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -140,28 +138,10 @@ public class Main extends Application {
                     int row = DBManager.insert(new User(Uno, Uname, Upw));
                     // 如果受影响的列数不为0,则说明插入成功
                     if (row != 0) {
-                        Stage YESview = new Stage();
-                        YESview.setX((Screen.getPrimary().getBounds().getWidth() - 100) / 2);
-                        YESview.setY((Screen.getPrimary().getBounds().getHeight() - 100) / 2);
-                        // 垂直布局
-                        VBox vbox = new VBox();
-                        // 居中显示
-                        vbox.setAlignment(Pos.CENTER);
-                        Label yesLabel = new Label("注册成功");
-                        Button yesBtn = new Button("确定");
-                        yesBtn.setOnAction(event2 -> {
-                            HashMap<String , String> map = new HashMap<String , String>();
-                            map.put("Uname", Uname);
-                            map.put("Uno", Uno);
-                            SettingView settingView = new SettingView(map);
-                            YESview.close();
-                            primaryStage.close();
-                            settingView.show();
-                        });
-                        vbox.getChildren().addAll(yesLabel, yesBtn);
-
-                        YESview.setScene(new Scene(vbox, 100, 100));
-                        YESview.show();
+                        HashMap map =  DBManager.search(new User(Uno, Upw));
+                        SettingView settingView = new SettingView(map);
+                        primaryStage.close();
+                        settingView.show();
                     }
                 }
 
