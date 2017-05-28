@@ -54,6 +54,26 @@ public class DBManager {
         return i;
     }
 
+    // 插入当前用户表
+    public static int insertCurrentUser(String name) {
+        Connection conn = getConn();
+        int i = 0;
+        // 在此可更改sql语句
+        String sql = "insert into currentUser (U_name) values(?)";
+        PreparedStatement pstmt;
+        try {
+            pstmt = (PreparedStatement) conn.prepareStatement(sql);
+            pstmt.setString(1, name);
+
+            i = pstmt.executeUpdate();
+            pstmt.close();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return i;
+    }
+
     // 查询某个用户是不是存在数据库中
     public static HashMap search(User user) {
         Connection conn = getConn();
@@ -146,6 +166,7 @@ public class DBManager {
         return i;
     }
 
+    // 插入数据到消息表中
     public int insertToMessage(String Uname, String Mes, String timeID) {
         Connection conn = getConn();
         int i = 0;

@@ -117,7 +117,6 @@ public class ServerView extends Stage {
             int col = rs.getMetaData().getColumnCount();
             String msg = "";
             String name = "";
-            msgArea.clear();
             while (rs.next()) {
                 // col是表中的列
                 for (int i = 1; i <= col; i++) {
